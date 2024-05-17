@@ -1,0 +1,5 @@
+HR
+*.log
+*.editorconfig
+.idea
+__pycache__

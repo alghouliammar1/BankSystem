@@ -1,20 +1,22 @@
 
 from CheckingAccount  import CheckingAccount
 from SavingsAccount  import SavingsAccount
-
+import uuid
 
 class BankSystem:
     def __init__(self):
         self.accounts = {}  # Dictionary to store accounts (key: account number, value: BankAccount object)
-        self.load_accounts_from_file()  # Call method to load accounts from file (if it exists)
+        self.load_accounts_from_file()  
 
     def generate_account_number(self):
-        # Implement logic to generate a unique account number
-        # Here's a simple example (replace with a more robust approach)
-        import random
-        account_number = random.randint(100000, 999999)
-        while account_number in self.accounts:
-            account_number = random.randint(100000, 999999)
+      
+        
+        # import random
+        # account_number = random.randint(100000, 999999)
+        # while account_number in self.accounts:
+        #     account_number = random.randint(100000, 999999)
+        # return account_number
+        account_number = uuid.uuid4()
         return account_number
     def create_account(self, name, pin, account_type="savings", starting_balance=0, interest_rate=0.01, overdraft_limit=0):
         account_number = self.generate_account_number()
