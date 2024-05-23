@@ -1,3 +1,1 @@
-210338,Ammar,1200.0,1234,Savings,0.01
-885641,Mero,30000.0,1234,Checking,0.0
-468115,Mero2,300.0,1234,Savings,0.01
+e05b06fc-1cbc-4837-90f6-6e15cd4cd005,ertika,400.0,1234,Checking,0

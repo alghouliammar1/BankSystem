@@ -1,0 +1,10 @@
+[
+    {
+        "account_number": "e05b06fc-1cbc-4837-90f6-6e15cd4cd005",
+        "name": "ertika",
+        "balance": 400.0,
+        "pin": 1234,
+        "account_type": "Checking",
+        "overdraft_limit": 0
+    }
+]

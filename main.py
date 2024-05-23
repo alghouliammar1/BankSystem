@@ -36,7 +36,7 @@ def main():
             print(f"Account created successfully! Your account number is: {new_account.account_number}")
         elif choice == "2":
            try:
-            account_number = int(input("Enter your account number: "))
+            account_number = (input("Enter your account number: "))
             entered_pin = int(input("Enter your PIN: "))
             authenticated_account = bank_system.authenticate_user(account_number, entered_pin)
             if authenticated_account:
@@ -46,7 +46,8 @@ def main():
             print("Accounts loaded successfully.")
            except FileNotFoundError:
             print("No accounts file found. Creating a new one.")
-
+        elif choice == "3": 
+            return False
 
 
 if __name__ == "__main__":

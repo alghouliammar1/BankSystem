@@ -2,7 +2,7 @@
 from CheckingAccount  import CheckingAccount
 from SavingsAccount  import SavingsAccount
 import uuid
-
+import json
 class BankSystem:
     def __init__(self):
         self.accounts = {}  # Dictionary to store accounts (key: account number, value: BankAccount object)
@@ -30,29 +30,93 @@ class BankSystem:
         self.write_accounts_to_file()  # Call method to write accounts to file
 
         return new_account
-
+#new load _accounts from json file 
     def load_accounts_from_file(self):
         try:
-            with open("accounts.txt", "r") as f:
-                for line in f:
-                    data = line.strip().split(",")
-                    account_number, name, balance, pin, account_type = data[0:5]
-                    if account_type == "Savings":
-                        interest_rate = float(data[5])
-                        account = SavingsAccount(
-                            int(account_number), name, float(balance), int(pin), interest_rate
-                        )
-                    elif account_type == "Checking":
-                        overdraft_limit = float(data[5])
-                        account = CheckingAccount(int(account_number), name, float(balance), int(pin), overdraft_limit)
-                    else:
-                        raise ValueError("Invalid account data found in file.")
-                    self.accounts[int(account_number)] = account
+            with open("accounts.json", "r") as f:
+                try:
+                 data = json.load(f)
+                except FileNotFoundError:
+                  raise ValueError("empty file.")
+                  
+            self.accounts = {}
+            for account_data in data:
+                account_number = account_data["account_number"]
+                name = account_data["name"]
+                balance = account_data["balance"]
+                pin = account_data["pin"]
+                account_type = account_data["account_type"]
+
+                if account_type == "Savings":
+                    interest_rate = account_data["interest_rate"]
+                    account = SavingsAccount(
+                        int(account_number), name, float(balance), int(pin), interest_rate
+                    )
+                elif account_type == "Checking":
+                    overdraft_limit = account_data["overdraft_limit"]
+                    account = CheckingAccount((account_number), name, float(balance), int(pin), overdraft_limit)
+                else:
+                    raise ValueError("Invalid account data found in file.")
+                self.accounts[(account_number)] = account
             print("Accounts loaded successfully.")
         except FileNotFoundError:
             print("No accounts file found. Creating a new one.")
-
+#here is the function with read from txt file
+    # def load_accounts_from_file(self):
+    #     try:
+    #         with open("accounts.txt", "r") as f:
+    #             for line in f:
+    #                 data = line.strip().split(",")
+    #                 account_number, name, balance, pin, account_type = data[0:5]
+    #                 if account_type == "Savings":
+    #                     interest_rate = float(data[5])
+    #                     account = SavingsAccount(
+    #                         int(account_number), name, float(balance), int(pin), interest_rate
+    #                     )
+    #                 elif account_type == "Checking":
+    #                     overdraft_limit = float(data[5])
+    #                     account = CheckingAccount(int(account_number), name, float(balance), int(pin), overdraft_limit)
+    #                 else:
+    #                     raise ValueError("Invalid account data found in file.")
+    #                 self.accounts[int(account_number)] = account
+    #         print("Accounts loaded successfully.")
+    #     except FileNotFoundError:
+    #         print("No accounts file found. Creating a new one.")
+    
+    #here is the new function that write accounts into json file
     def write_accounts_to_file(self):
+        account_data = []
+        for account in self.accounts.values():
+            if isinstance(account, SavingsAccount):
+                account_data.append(
+                    {
+                        "account_number": account.account_number,
+                        "name": account.name,
+                        "balance": account.balance,
+                        "pin": account.pin,
+                        "account_type": account.account_type,
+                        "interest_rate": account.interest_rate,
+                    }
+                )
+            elif isinstance(account, CheckingAccount):
+                account_data.append(
+                    {
+                        "account_number": account.account_number,
+                        "name": account.name,
+                        "balance": account.balance,
+                        "pin": account.pin,
+                        "account_type": account.account_type,
+                        "overdraft_limit": account.overdraft_limit,
+                    }
+                )
+            else:
+                raise ValueError("Unexpected account type found.")
+
+        with open("accounts.json", "w") as f:
+            json.dump(account_data, f, indent=4, cls=CustomJSONEncoder)
+        print("Accounts saved successfully.")
+
+    # def write_accounts_to_file(self):
         with open("accounts.txt", "w") as f:
             for account in self.accounts.values():
                 if isinstance(account, SavingsAccount):
@@ -77,7 +141,7 @@ class BankSystem:
                     raise ValueError("Unexpected account type found.")
                 f.write(",".join(map(str, account_data)) + "\n")
         print("Accounts saved successfully.")
-    def get_Account(self,account_number):
+    def get_account(self,account_number):
         if account_number in self.accounts:
             account = self.accounts[account_number]
             return account
@@ -85,6 +149,7 @@ class BankSystem:
             print("Account not found.")
         return None
     def authenticate_user(self, account_number, entered_pin):
+       
         if account_number in self.accounts:
             account = self.accounts[account_number]
             if account.authenticate(entered_pin):
@@ -156,7 +221,7 @@ class BankSystem:
             return False
 
         # Get recipient account object
-        recipient_account = self.get_Account(to_account_number)
+        recipient_account = self.get_account(to_account_number)
 
         # Perform the transfer (deduct from this account, add to recipient account)
         account.withdraw(amount)
@@ -169,3 +234,8 @@ class BankSystem:
         print(f"Transfer successful! Transferred ${amount:.2f} to account {to_account_number}.")
         return True
 
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, uuid.UUID):
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)
