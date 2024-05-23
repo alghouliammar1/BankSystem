@@ -1,1 +1,4 @@
-e05b06fc-1cbc-4837-90f6-6e15cd4cd005,ertika,400.0,1234,Checking,0
+e05b06fc-1cbc-4837-90f6-6e15cd4cd005,ertika,3500.0,1234,Checking,0
+d4adb23f-2c98-4276-a8d6-b7060db2c713,Mero,430.0,1234,Checking,0
+f18b3cad-a69f-486d-a1db-608942a516e8,naser,800.0,4321,Savings,0.1
+b2cd505a-159f-49be-b330-e6d92937dd6d,nino,3000.0,1234,Checking,0

@@ -1,0 +1,42 @@
+[
+    {
+        "account_number": "e05b06fc-1cbc-4837-90f6-6e15cd4cd005",
+        "name": "ertika",
+        "balance": 3500.0,
+        "pin": 1234,
+        "account_type": "Checking",
+        "overdraft_limit": 0
+    },
+    {
+        "account_number": "d4adb23f-2c98-4276-a8d6-b7060db2c713",
+        "name": "Mero",
+        "balance": 430.0,
+        "pin": 1234,
+        "account_type": "Checking",
+        "overdraft_limit": 0
+    },
+    {
+        "account_number": "f18b3cad-a69f-486d-a1db-608942a516e8",
+        "name": "naser",
+        "balance": 800.0,
+        "pin": 4321,
+        "account_type": "Savings",
+        "interest_rate": 0.1
+    },
+    {
+        "account_number": "b2cd505a-159f-49be-b330-e6d92937dd6d",
+        "name": "nino",
+        "balance": 3000.0,
+        "pin": 1234,
+        "account_type": "Checking",
+        "overdraft_limit": 0
+    },
+    {
+        "account_number": "bbd65187-71cf-4274-b796-98a9ac508771",
+        "name": "nono",
+        "balance": 3000.0,
+        "pin": 1234,
+        "account_type": "Savings",
+        "interest_rate": 0.2
+    }
+]

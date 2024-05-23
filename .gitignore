@@ -3,3 +3,6 @@ HR
 *.editorconfig
 .idea
 __pycache__
+*.txt
+logs
+HR

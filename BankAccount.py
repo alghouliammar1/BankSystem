@@ -19,7 +19,7 @@ class BankAccount(User):
         self.write_transaction_log_to_file()
 
     def write_transaction_log_to_file(self):
-        with open(f"{self.account_number}_transactions.txt", "a") as f:
+        with open(f"Transactions/{self.account_number}_transactions.txt", "a") as f:
             for transaction in self.transaction_log:
                 f.write(transaction + "\n")
         self.transaction_log = []  # Clear transaction log after writing to file
@@ -27,7 +27,7 @@ class BankAccount(User):
         """Reads the transaction log from the file and returns a list of transactions."""
         try:
             # Construct the filename based on account number
-            filename = f"{self.account_number}_transactions.txt"
+            filename = f"Transactions/{self.account_number}_transactions.txt"
             with open(filename, "r") as f:
                 transactions = [line.strip() for line in f.readlines()]
             return transactions
