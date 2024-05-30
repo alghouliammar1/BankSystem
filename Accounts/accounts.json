@@ -38,5 +38,21 @@
         "pin": 1234,
         "account_type": "Savings",
         "interest_rate": 0.2
+    },
+    {
+        "account_number": "63c98f76-714b-49fd-9664-c801eeb683bd",
+        "name": "Al-ghouli",
+        "balance": 3000.0,
+        "pin": 1234,
+        "account_type": "Checking",
+        "overdraft_limit": 0
+    },
+    {
+        "account_number": "69ecf08a-442e-4547-a524-2a8947840dcf",
+        "name": "Mansor",
+        "balance": 400.0,
+        "pin": 4321,
+        "account_type": "Savings",
+        "interest_rate": 0.43
     }
 ]

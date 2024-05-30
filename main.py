@@ -1,6 +1,17 @@
 
 from BankSystem import BankSystem
+import logging
 
+# Configure a logger with INFO level
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Create a handler to print to the console
+handler = logging.StreamHandler()
+#handler.setLevel(logging.ERROR)  # Set handler level to match logger level
+
+# Add the handler to the logger
+logger.addHandler(handler)
 def main():
     bank_system = BankSystem()
 
@@ -24,16 +35,18 @@ def main():
                         name, pin, account_type, starting_balance, interest_rate
                     )
                 except:
+                    logger.error("Unexpected value type found.")
                     raise ValueError("Unexpected value type found.")
+                   
             elif account_type == "checking":
                 overdraft_limit = float(input("Enter overdraft limit (optional, default 0): ") or 0)
                 new_account = bank_system.create_account(
                     name, pin, account_type, starting_balance, overdraft_limit
                 )
             else:
-                print("Invalid account type. Choose from 'Savings' or 'Checking'.")
+                logger.error("Invalid account type. Choose from 'Savings' or 'Checking'.")
                 continue
-            print(f"Account created successfully! Your account number is: {new_account.account_number}")
+            logger.info(f"Account created successfully! Your account number is: {new_account.account_number}")
         elif choice == "2":
            try:
             account_number = (input("Enter your account number: "))
@@ -42,10 +55,10 @@ def main():
             if authenticated_account:
                 bank_system.manage_account(authenticated_account)
             else:
-                print("Authentication failed.")
-            print("Accounts loaded successfully.")
+                logger.error("Authentication failed.")
+            logger.info("Accounts loaded successfully.")
            except FileNotFoundError:
-            print("No accounts file found. Creating a new one.")
+            logger.error("No accounts file found. Creating a new one.")
         elif choice == "3": 
             return False
 
