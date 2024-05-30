@@ -1,4 +1,6 @@
 from BankAccount import BankAccount
+
+
 class SavingsAccount(BankAccount):
     def __init__(self, account_number, name, balance, pin, interest_rate=0.01):
         super().__init__(account_number, name, balance, pin, "Savings")
@@ -11,4 +13,3 @@ class SavingsAccount(BankAccount):
             print(f"Deposit successful. New balance: ${self.balance:.2f}")
         else:
             print("Invalid deposit amount.")
-

@@ -1,17 +1,18 @@
 import datetime
 from User import User
+
+
 class BankAccount(User):
     def __init__(self, account_number, name, balance, pin, account_type="Standard"):
         super().__init__(name, pin)
         self.account_number = account_number
-        
+
         self.balance = balance
         self.account_type = account_type
         self.transaction_log = []  # List to store transaction history
 
     def get_balance(self):
         return self.balance
-
 
     def log_transaction(self, message):
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -23,6 +24,7 @@ class BankAccount(User):
             for transaction in self.transaction_log:
                 f.write(transaction + "\n")
         self.transaction_log = []  # Clear transaction log after writing to file
+
     def read_transaction_log(self):
         """Reads the transaction log from the file and returns a list of transactions."""
         try:

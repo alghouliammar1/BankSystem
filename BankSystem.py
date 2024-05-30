@@ -1,41 +1,61 @@
-
-from CheckingAccount  import CheckingAccount
-from SavingsAccount  import SavingsAccount
+from CheckingAccount import CheckingAccount
+from SavingsAccount import SavingsAccount
 import uuid
 import json
+
+
 class BankSystem:
     def __init__(self):
         self.accounts = {}  # Dictionary to store accounts (key: account number, value: BankAccount object)
-        self.load_accounts_from_file()  
+        self.load_accounts_from_file()
 
     def generate_account_number(self):
         account_number = uuid.uuid4()
         return account_number
-    
-    def create_account(self, name, pin, account_type="savings", starting_balance=0, interest_rate=0.01, overdraft_limit=0):
+
+    def create_account(
+        self,
+        name,
+        pin,
+        account_type="savings",
+        starting_balance=0,
+        interest_rate=0.01,
+        overdraft_limit=0,
+    ):
         account_number = self.generate_account_number()
         if account_type == "savings":
-            new_account = SavingsAccount(account_number, name, starting_balance, pin, interest_rate)
-            new_account.log_transaction(f"Create: -${account_number} with starting balance {starting_balance:.2f} and Interest Rate of {interest_rate:.2f}" )
-        elif account_type == 'checking':
-            new_account = CheckingAccount(account_number, name, starting_balance, pin, overdraft_limit)
-            new_account.log_transaction(f"Create: -${account_number} with starting balance {starting_balance:.2f} and Overdraft Limit of {overdraft_limit:.2f}" )
+            new_account = SavingsAccount(
+                account_number, name, starting_balance, pin, interest_rate
+            )
+            new_account.log_transaction(
+                f"Create: +${account_number} with Initial Balance {starting_balance:.2f} and Interest Rate of {interest_rate:.2f}"
+            )
+        elif account_type == "checking":
+            new_account = CheckingAccount(
+                account_number, name, starting_balance, pin, overdraft_limit
+            )
+            new_account.log_transaction(
+                f"Create: +${account_number} with Initial Balance {starting_balance:.2f} and Overdraft Limit of {overdraft_limit:.2f}"
+            )
 
         else:
-            raise ValueError("Invalid account type. Choose from 'Savings' or 'Checking'.")
+            raise ValueError(
+                "Invalid account type. Choose from 'Savings' or 'Checking'."
+            )
         self.accounts[account_number] = new_account
         self.write_accounts_to_file()  # Call method to write accounts to file
         self.load_accounts_from_file()
         return new_account
-#new load _accounts from json file 
+
+    # new load _accounts from json file
     def load_accounts_from_file(self):
         try:
             with open("Accounts/accounts.json", "r") as f:
                 try:
-                 data = json.load(f)
+                    data = json.load(f)
                 except FileNotFoundError:
-                  raise ValueError("empty file.")
-                  
+                    raise ValueError("empty file.")
+
             self.accounts = {}
             for account_data in data:
                 account_number = account_data["account_number"]
@@ -50,7 +70,13 @@ class BankSystem:
                     )
                 elif account_type == "Checking":
                     overdraft_limit = account_data["overdraft_limit"]
-                    account = CheckingAccount((account_number), name, float(balance), int(pin), overdraft_limit)
+                    account = CheckingAccount(
+                        (account_number),
+                        name,
+                        float(balance),
+                        int(pin),
+                        overdraft_limit,
+                    )
                 else:
                     raise ValueError("Invalid account data found in file.")
                 self.accounts[(account_number)] = account
@@ -58,7 +84,7 @@ class BankSystem:
         except FileNotFoundError:
             print("No accounts file found. Creating a new one.")
 
-#here is the new function that write accounts into json file
+    # here is the new function that write accounts into json file
     def write_accounts_to_file(self):
         account_data = []
         for account in self.accounts.values():
@@ -91,16 +117,15 @@ class BankSystem:
             json.dump(account_data, f, indent=4, cls=CustomJSONEncoder)
         print("Accounts saved successfully.")
 
-   
-    def get_account(self,account_number):
+    def get_account(self, account_number):
         if account_number in self.accounts:
             account = self.accounts[account_number]
             return account
         else:
             print("Account not found.")
         return None
+
     def authenticate_user(self, account_number, entered_pin):
-       
         if account_number in self.accounts:
             account = self.accounts[account_number]
             if account.authenticate(entered_pin):
@@ -110,8 +135,9 @@ class BankSystem:
         else:
             print("Account not found.")
         return None
-    #Transfer Function use to transfer  from one Account to Another account 
-    def transfer(self,account, to_account_number, amount):      
+
+    # Transfer Function use to transfer  from one Account to Another account
+    def transfer(self, account, to_account_number, amount):
         if amount <= 0:
             raise BusinessException("Transfer amount must be positive.")
 
@@ -119,7 +145,9 @@ class BankSystem:
             raise BusinessException("Cannot transfer money to the same account.")
 
         if not self.is_account_valid(to_account_number):
-            raise BusinessException(f"Invalid recipient account number: {to_account_number}")
+            raise BusinessException(
+                f"Invalid recipient account number: {to_account_number}"
+            )
 
         # Check if sufficient funds are available (including overdraft limit for CheckingAccount)
         if account.balance + account.overdraft_limit < amount:
@@ -132,10 +160,16 @@ class BankSystem:
         recipient_account.deposit(amount)
 
         # Log the transaction in both accounts
-        account.log_transaction(f"Transfer: -${amount:.2f} to account {to_account_number}")
-        recipient_account.log_transaction(f"Transfer: +${amount:.2f} from account {account.account_number}")
+        account.log_transaction(
+            f"Transfer: -${amount:.2f} to account {to_account_number}"
+        )
+        recipient_account.log_transaction(
+            f"Transfer: +${amount:.2f} from account {account.account_number}"
+        )
 
-        print(f"Transfer successful! Transferred ${amount:.2f} to account {to_account_number}.")
+        print(
+            f"Transfer successful! Transferred ${amount:.2f} to account {to_account_number}."
+        )
         return True
 
     def manage_account(self, account):
@@ -160,11 +194,11 @@ class BankSystem:
                 amount = float(input("Enter withdrawal amount: "))
                 account.withdraw(amount)
             elif choice == "4" and isinstance(account, CheckingAccount):
-                to_account_number = (input("Enter recipient account number: "))
+                to_account_number = input("Enter recipient account number: ")
                 amount = float(input("Enter withdrawal amount: "))
-                self.transfer(account,to_account_number,amount)
+                self.transfer(account, to_account_number, amount)
             elif choice == "5":
-                transactions=account.read_transaction_log()
+                transactions = account.read_transaction_log()
                 if transactions:
                     for transaction in transactions:
                         print(transaction)
@@ -178,13 +212,15 @@ class BankSystem:
     def is_account_valid(self, account_number):
         return account_number in self.accounts
 
-  
+
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, uuid.UUID):
             return str(obj)
         return json.JSONEncoder.default(self, obj)
-    
+
+
 class BusinessException(Exception):
-  """Custom exception for business logic errors."""
-  pass    
+    """Custom exception for business logic errors."""
+
+    pass
